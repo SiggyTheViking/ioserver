@@ -1,0 +1,29 @@
+
+var util = require('util'),
+	net = require('net'),
+	disp = require('dispatcher');
+
+
+var server = net.createServer(function(socket){
+	socket.on('data',function(data){
+		//var str = pp.dispatch.parseProtocol(data);
+		var dispatcher = new disp.Dispatcher();
+
+		dispatcher.on('error',function(msg){
+			//util.log("Boom!");
+			socket.write('error: ' + msg);
+		});
+		dispatcher.on('dispatched',function(msgObj){
+			//util.log(msgObj);
+			socket.write(msgObj.cmd);
+		});
+		dispatcher.parseProtocol(data);
+		/*
+		util.log(data);
+		socket.write(data);*/
+	});
+});
+
+
+
+server.listen(1099);
